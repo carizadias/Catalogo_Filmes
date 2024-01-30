@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Filmes</title>
+    <style>
+        /* Estilos para o card */
+        .card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            width:auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #5cb85c; /* Cor de fundo verde */
+            color: #fff; /* Cor do texto */
+        }
+        /* Estilos para a imagem do filme */
+        .card img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        /* Estilos para o título do filme */
+        .card h2 {
+            margin: 0;
+        }
+        /* Estilos para o gênero e diretor */
+        .card p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body >
+    <h1>Catálogo de Filmes</h1>
+    <!-- Loop para criar um card para cada filme -->
+    <% filmes.forEach(filme => { %>
+        <div class="card">
+            <!-- Imagem do filme -->
+            <img src="<%= filme.capa %>" alt="Capa do Filme">
+            <!-- Título do filme -->
+            <h2><%= filme.titulo %></h2>
+            <!-- Gênero e diretor -->
+            <p><strong>Gênero:</strong> <%= filme.genero %></p>
+            <p><strong>Diretor:</strong> <%= filme.diretor %></p>
+        </div>
+    <% }); %>
+</body>
+</html>

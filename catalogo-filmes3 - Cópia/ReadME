@@ -1,0 +1,96 @@
+
+# Catálogo de Filmes GraphQL API
+
+Bem-vindo ao README da API GraphQL para o Catálogo de Filmes. Esta API permite consultar e adicionar filmes ao catálogo.
+
+## Instalação
+
+Para começar, siga estas instruções para configurar e executar o projeto localmente:
+
+1. Clone este repositório em sua máquina local:
+
+```bash
+git clone hhttps://github.com/carizadias/Catalogo_Filmes.git
+```
+
+2. Navegue até o diretório do projeto:
+
+```bash
+cd catalogo-filmes
+```
+
+3. Instale as dependências usando npm:
+
+```bash
+npm install
+```
+
+4. Configure as variáveis de ambiente:
+
+Renomeie o arquivo `.env(example)` para `.env` e ajuste as variáveis conforme necessário.
+
+5. Inicie o servidor:
+
+```bash
+npm start
+```
+
+## Uso
+
+Depois de iniciar o servidor, você pode acessar o GraphQL Playground em [http://localhost:4000/graphql](http://localhost:4000/graphql) para interagir com a API.
+
+### Exemplos de Consultas e Mutações:
+
+Aqui estão alguns exemplos de consultas e mutações que você pode experimentar:
+
+```graphql
+query {
+  filmes {
+    id
+    titulo
+    genero
+    diretor
+  }
+}
+
+mutation {
+  adicionarFilme(
+    titulo: "O Poderoso Chefão"
+    genero: "Crime, Drama"
+    diretor: "Francis Ford Coppola"
+  ) {
+    id
+    titulo
+    genero
+    diretor
+  }
+}
+
+mutation {
+  atualizarFilme(id: "1", titulo: "O Senhor dos Anéis: As Duas Torres") {
+    id
+    titulo
+    genero
+    diretor
+  }
+}
+mutation {
+  excluirFilme(id: "2") {
+    id
+    titulo
+    genero
+    diretor
+  }
+}
+
+```
+
+## Documentação da API
+
+Para uma documentação detalhada da API, consulte o GraphQL Playground em [http://localhost:4000/graphql](http://localhost:4000/graphql).
+
+## Contato
+
+Se você tiver dúvidas ou sugestões, entre em contato com [carizapddias@gmail.com.com]
+
+```

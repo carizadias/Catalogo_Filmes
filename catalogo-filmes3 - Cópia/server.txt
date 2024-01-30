@@ -1,0 +1,91 @@
+const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
+const sequelize = require('./database');
+const Filme = require('./models/Filme');
+const {graphqlUploadExpress} = require('graphql-upload');
+const {createWriteStream} = require('fs');
+
+require('dotenv').config();
+
+const path = require('path'); // Importe o módulo 'path' para lidar com caminhos de arquivos
+
+const typeDefs = gql`
+  type Filme {
+    id: ID!
+    titulo: String!
+    genero: String
+    diretor: String
+  }
+
+  type Query {
+    filmes: [Filme!]!
+  }
+
+  type Mutation {
+    adicionarFilme(titulo: String!, genero: String!, diretor: String!, capa: Upload!): Filme!
+  }
+`;
+
+const resolvers = {
+  Query: {
+    filmes: async () => {
+      return await Filme.findAll();
+    }
+  },
+  Mutation: {
+    adicionarFilme: async (_, { titulo, genero, diretor, capa }) => {
+      try {
+        const novoFilme = await Filme.create({ titulo, genero, diretor });
+        return novoFilme;
+      } catch (error) {
+        throw new Error('Erro ao adicionar filme: ' + error.message);
+      }
+    }
+  }
+};
+
+async function startServer() {
+  const server = new ApolloServer({ typeDefs, resolvers });
+  await server.start();
+
+  const app = express();
+
+  app.set('view engine', 'ejs');
+
+  // Servir arquivos estáticos da pasta 'public'
+  app.use(express.static('public'));
+  app.use(express.static(path.join(__dirname, 'public')));
+
+  // Rota para servir o arquivo index.html
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
+
+// Rota para servir a página de filmes usando o arquivo filmes.ejs
+app.get('/filmes', async (req, res) => {
+    try {
+        console.log('Recuperando dados dos filmes do banco de dados...');
+        const filmes = await Filme.findAll();
+        console.log('Filmes encontrados:', filmes); // Adiciona este log para verificar os filmes
+        res.render('filmes', { filmes }); // Renderiza o template filmes.ejs e passa os dados dos filmes
+    } catch (error) {
+        console.error('Erro ao buscar filmes', error);
+        res.status(500).send('Erro ao buscar filmes');
+    }
+});
+
+  // Adicione o middleware graphqlUploadExpress para lidar com uploads de arquivos
+  app.use(graphqlUploadExpress());
+
+  server.applyMiddleware({ app });
+
+  await sequelize.sync({ alter: true });
+  console.log('Tabelas sincronizadas com o banco de dados.');
+
+  const PORT = process.env.PORT || 4005;
+  app.listen(PORT, () =>
+    console.log(`Servidor GraphQL rodando em http://localhost:${PORT}${server.graphqlPath}`)
+  );
+}
+
+startServer().catch(error => console.error('Erro ao iniciar o servidor:', error));
